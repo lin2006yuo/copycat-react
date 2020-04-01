@@ -1,18 +1,26 @@
 import React from "./react"
-const ReactDOM  = React
+const ReactDOM = React
 
 // import ReactDOM from "./react"
 // import  React from 'react'
 
 const element = (
   <div>
-    <h1>标题</h1>
-    <div>
+    <header>标题</header>
+    <section>
       <div>哈哈</div>
       <div>哈哈</div>
-    </div>
-    <a href="www.baidu.com">跳转</a>
+    </section>
+    <footer>底部</footer>
   </div>
 )
+
+const App = () => {
+  return (
+    <div>
+      <header>函数组件</header>
+    </div>
+  )
+}
 
 ReactDOM.render(element, document.getElementById("root"))

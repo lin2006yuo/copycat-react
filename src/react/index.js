@@ -137,22 +137,13 @@ requestIdleCallback(workLoop)
  * }
  */
 function performUnitOfWork(fiber) {
-  console.log({fiber})
-  // wipRoot = {
-  //   dom: container,
-  //   props: {
-  //     children: [vdom]
-  //   }
-  // }
-  if (!fiber.dom) {
-    fiber.dom = createDom(fiber)
+  console.log({ fiber })
+  const isFunctionComponent = fiber.type instanceof Function
+  if (isFunctionComponent) {
+    updateFunctionComponent(fiber)
+  } else {
+    updateHostComponent(fiber)
   }
-  // if (fiber.parent) {
-  //   fiber.parent.dom.appendChild(fiber.dom)
-  // }
-  // 构建fiber
-  let elements = fiber.props.children
-  reconcileChildren(fiber, elements)
 
   if (fiber.child) {
     return fiber.child
@@ -166,20 +157,23 @@ function performUnitOfWork(fiber) {
   }
 }
 
+function updateFunctionComponent() {}
+
+function updateHostComponent(fiber) {
+  if (!fiber.dom) {
+    fiber.dom = createDom(fiber)
+  }
+  let elements = fiber.props.children
+  reconcileChildren(fiber, elements)
+}
+
 function reconcileChildren(wipFiber, elements) {
   let index = 0
   let oldFiber = wipFiber.base && wipFiber.base.child
   let prevSibling = null
   while (index < elements.length || oldFiber != null) {
-    console.log(1)
     let element = elements[index]
     let newFiber = null
-    // const newFiber = {
-    //   type: element.type,
-    //   props: element.props,
-    //   parent: wipFiber,
-    //   dom: null
-    // }
 
     const sameType = oldFiber && element && oldFiber.type === element.type
     if (sameType) {
@@ -209,9 +203,6 @@ function reconcileChildren(wipFiber, elements) {
       newFiber.effectTag = "DELETE"
       deletions.push(oldFiber)
     }
-
-
-
 
     if (oldFiber) {
       oldFiber = oldFiber.sibling
